@@ -9,8 +9,11 @@
 
                 <div class="col-sm-4">
                     <h4>Color</h4>
-                    <button type="button" class="btn btn-default btn-xs" @click="loadImage">red</button>
+                    <button type="button" class="btn btn-default btn-xs" @click="loadImage('/img/bg-1.jpg')">1</button>
+                    <button type="button" class="btn btn-default btn-xs" @click="loadImage('/img/bg-2.jpg')">2</button>
                     <h4>Stiker</h4>
+                    <button type="button" class="btn btn-default btn-xs" @click="loadStiker('/img/sticker-1.jpg')">stiker 1</button>
+                    <button type="button" class="btn btn-default btn-xs" @click="loadStiker('/img/sticker-2.png')">stiker 2</button>
                     <h4>Ingredients</h4>
                     <h4>Pattern</h4>
 
@@ -28,61 +31,62 @@ import Konva from 'konva';
 export default {
     data: function() {
         return {
-            flavor: 'test fla'
+            flavor: 'test fla',
+            stage: null,
+            layer: null,
+            img: null,
+            sticker: null,
+            ingredients: null,
+            pattern: null,
         }
     },
     components: {},
     mounted() {
-        var width = document.getElementById("canvas").offsetWidth;
-        console.log('views/Canvas.vue')
-        console.log(width);
-        var stage = new Konva.Stage({
+        this.stage = new Konva.Stage({
             container: 'canvas',
-            width: width,
-            height: width
+            width: 400,
+            height: 400
         });
-        var layer = new Konva.Layer();
-        var rect = new Konva.Rect({
-            x: 50,
-            y: 50,
-            width: 100,
-            height: 50,
-            fill: 'green',
-            stroke: 'black',
-            strokeWidth: 4
-        });
-        var simpleText = new Konva.Text({
-            x: stage.getWidth() / 2,
-            y: 15,
-            text: this.flavor,
-            fontSize: 30,
-            fontFamily: 'Calibri',
-            fill: 'green'
-        });
-        var imageObj = new Image();
-        imageObj.onload = function() {
+        this.layer = new Konva.Layer();
+        this.img = new Image();
+        var vm = this;
+        this.img.onload = function() {
             var yoda = new Konva.Image({
-                x: 50,
-                y: 50,
-                image: imageObj,
-                width: 106,
-                height: 118
+                x: 0,
+                y: 0,
+                image: vm.img,
+                width: 400,
+                height: 400
             });
             // add the shape to the layer
-            layer.add(yoda);
+            vm.layer.add(yoda);
             // add the layer to the stage
-            stage.add(layer);
-        }
-        imageObj.src = '/img/yoda.jpg';
-        // add the shape to the layer
-        // layer.add(rect);
-        // layer.add(simpleText);
-        // layer.add(image);
-        // // add the layer to the stage
-        // stage.add(layer);
+            vm.stage.add(vm.layer);
+        };
+        this.img.src = '/img/bg-1.jpg';
+
+        this.sticker = new Image();
+        this.sticker.onload = function() {
+            var sticker = new Konva.Image({
+                x: 0,
+                y: 30,
+                image: vm.sticker,
+                width: 100,
+                height: 100
+            });
+            vm.layer.add(sticker)
+            vm.stage.add(vm.layer)
+        };
+
     },
     methods: {
-        loadImage() {},
+        loadImage(src) {
+            console.log(src);
+            this.img.src = src;
+        },
+        loadStiker(src) {
+            this.sticker.src = src;
+        },
         kimage() {},
     }
 }
